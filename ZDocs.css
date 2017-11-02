@@ -1,0 +1,32 @@
+/* CSS file for ZDocs */
+.ZDocsVersionList {
+	border: 1px #bbb solid;
+	padding: 10px;
+}
+.ZDocsManualList {
+	border: 1px #bbb solid;
+	padding: 10px;
+}
+.ZDocsOtherManualVersions {
+	border: 1px #bbb solid;
+	padding: 10px;
+}
+.ZDocsManualTOC {
+	border: 1px #bbb solid;
+	padding: 10px;
+}
+.ZDocsPrevTopicLink {
+	border: 1px #bbb solid;
+	padding: 10px;
+	float: left;
+}
+.ZDocsNextTopicLink {
+	border: 1px #bbb solid;
+	padding: 10px;
+	float: right;
+}
+.ZDocsTopicTOC {
+	clear: both;
+	border: 1px #bbb solid;
+	padding: 10px;
+}
