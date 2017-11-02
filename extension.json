@@ -1,0 +1,72 @@
+{
+	"name": "ZDocs",
+	"namemsg": "zdocs-extensionname",
+	"version": "0.1",
+	"author": "Yaron Koren",
+	"url": "https://www.mediawiki.org/wiki/Extension:ZDocs",
+	"descriptionmsg": "zdocs-desc",
+	"type": "parserhook",
+	"requires": {
+		"MediaWiki": ">= 1.25"
+	},
+	"AvailableRights": [
+		"zdocs-administer",
+		"zdocs-edit"
+	],
+	"GroupPermissions": {
+		"sysop": {
+			"zdocs-administer": true
+		}
+	},
+	"MessagesDirs": {
+		"ZDocs": [
+			"i18n"
+		]
+	},
+	"ExtensionMessagesFiles": {
+		"ZDocsMagic": "ZDocs.i18n.magic.php"
+	},
+	"AutoloadClasses": {
+		"ZDocsHooks": "ZDocs.hooks.php",
+		"ZDocsUtils": "ZDocsUtils.php",
+		"ZDocsParserFunctions": "ZDocsParserFunctions.php",
+		"ZDocsPage": "ZDocsPage.php",
+		"ZDocsProduct": "ZDocsProduct.php",
+		"ZDocsVersion": "ZDocsVersion.php",
+		"ZDocsManual": "ZDocsManual.php",
+		"ZDocsTopic": "ZDocsTopic.php"
+	},
+	"ResourceModules": {
+		"ext.zdocs.main": {
+			"styles": "ZDocs.css"
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "",
+		"remoteExtPath": "ZDocs"
+	},
+	"Hooks": {
+		"ParserFirstCallInit": [
+			"ZDocsHooks::registerParserFunctions"
+		],
+		"userCan": [
+			"ZDocsHooks::checkPermissions"
+		],
+		"OutputPageBeforeHTML": [
+			"ZDocsHooks::addTextToPage"
+		],
+		"PageContentSaveComplete": [
+			"ZDocsHooks::setSearchText"
+		],
+		"MagicWordwgVariableIDs": [
+			"ZDocsHooks::declareVarIDs"
+		],
+		"ParserGetVariableValueSwitch": [
+			"ZDocsHooks::assignAValue"
+		]
+	},
+	"config": {
+		"ZDocsProductPages": []
+	},
+	"manifest_version": 1
+}
