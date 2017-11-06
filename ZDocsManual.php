@@ -92,6 +92,9 @@ class ZDocsManual extends ZDocsPage {
 			$this->generateTableOfContents( $showErrors );
 		}
 		$topicActualName = $topic->getActualName();
+		$prevTopic = null;
+		$nextTopic = null;
+
 		foreach( $this->mOrderedTopics as $i => $curTopicActualName ) {
 			if ( $topicActualName == $curTopicActualName ) {
 				// It's wasteful to have to create the ZDocsTopic objects

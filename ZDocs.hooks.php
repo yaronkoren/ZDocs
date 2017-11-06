@@ -36,6 +36,10 @@ class ZDocsHooks {
 	}
 
 	static public function addTextToPage( &$out, &$text ) {
+		$action = Action::getActionName( $out->getContext() );
+		if ( $action != 'view' ) {
+			return true;
+		}
 		$title = $out->getTitle();
 		$zdPage = ZDocsUtils::pageFactory( $title );
 		if ( $zdPage == null ) {
