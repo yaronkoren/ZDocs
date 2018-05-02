@@ -55,6 +55,9 @@
 		"OutputPageBeforeHTML": [
 			"ZDocsHooks::addTextToPage"
 		],
+		"SkinBuildSidebar": [
+			"ZDocsHooks::addTextToSidebar"
+		],
 		"PageContentSaveComplete": [
 			"ZDocsHooks::setSearchText"
 		],
@@ -66,7 +69,8 @@
 		]
 	},
 	"config": {
-		"ZDocsProductPages": []
+		"ZDocsProductPages": [],
+		"ZDocsDisplayFooterElementsInSidebar": false
 	},
 	"manifest_version": 1
 }

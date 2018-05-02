@@ -36,6 +36,8 @@ class ZDocsHooks {
 	}
 
 	static public function addTextToPage( &$out, &$text ) {
+		global $wgZDocsDisplayFooterElementsInSidebar;
+
 		$action = Action::getActionName( $out->getContext() );
 		if ( $action != 'view' ) {
 			return true;
@@ -52,8 +54,34 @@ class ZDocsHooks {
 			global $wgParser;
 			$text .= $wgParser->parse( $inheritedPageText, $title, new ParserOptions() )->getText();
 		}
-		$text = $zdPage->getHeader() . $text . $zdPage->getFooter();
+		$text = $zdPage->getHeader() . $text;
+
+		if ( ! $wgZDocsDisplayFooterElementsInSidebar ) {
+			$text .= $zdPage->getFooter();
+		}
 		return true;
+	}
+
+	static public function addTextToSidebar( Skin $skin, &$sidebar ) {
+		global $wgZDocsDisplayFooterElementsInSidebar;
+
+		if ( ! $wgZDocsDisplayFooterElementsInSidebar ) {
+			return true;
+		}
+
+		$title = $skin->getTitle();
+		$zdPage = ZDocsUtils::pageFactory( $title );
+		if ( $zdPage == null ) {
+			return true;
+		}
+
+		$sidebarContents = $zdPage->getSidebarText();
+		if ( $sidebarContents == null ) {
+			return true;
+		}
+
+		list( $header, $contents ) = $sidebarContents;
+		$sidebar[$header] = $contents;
 	}
 
 	/**

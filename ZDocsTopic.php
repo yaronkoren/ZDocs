@@ -45,6 +45,12 @@ class ZDocsTopic extends ZDocsPage {
 		return Html::rawElement( 'div', array( 'class' => 'ZDocsTopicTOC' ), $header . $toc );
 	}
 
+	function getSidebarText() {
+		$manual = $this->getManual();
+		$toc = $manual->getTableOfContents( false );
+		return array( $manual->getDisplayName(), $toc );
+	}
+
 	function getChildrenPages() {
 		return array();
 	}

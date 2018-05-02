@@ -177,6 +177,10 @@ abstract class ZDocsPage {
 	function getFooter() {
 		return null;
 	}
+
+	function getSidebarText() {
+		return null;
+	}
 	
 	function getActualName() {
 		$pageName = $this->mTitle->getText();
