@@ -56,7 +56,7 @@ class ZDocsManual extends ZDocsPage {
 			$topicActualName = $topic->getActualName();
 			$tocBeforeReplace = $toc;
 			$toc = preg_replace( "/(\*+)\s*$topicActualName\s*$/m",
-				'$1' . $topic->getLink(), $toc );
+				'$1' . $topic->getTOCLink(), $toc );
 			if ( $toc != $tocBeforeReplace ) {
 				// Replacement was succesful.
 				$this->mOrderedTopics[] = $topicActualName;
@@ -73,7 +73,7 @@ class ZDocsManual extends ZDocsPage {
 			global $wgOut;
 			$topicLinks = array();
 			foreach ( $topics as $topic ) {
-				$topicLinks[] = $topic->getLink();
+				$topicLinks[] = $topic->getTOCLink();
 			}
 			$errorMsg = wfMessage( 'zdocs-manual-extratopics', implode( ', ', $topicLinks ) )->text();
 			$wgOut->addHTML( Html::rawElement( 'div', array( 'class' => 'warningbox' ), $errorMsg ) );

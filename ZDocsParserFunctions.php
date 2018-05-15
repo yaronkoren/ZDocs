@@ -25,7 +25,7 @@
  * This function defines a manual page.
  *
  * '#zdocs_topic' is called as:
- * {{#zdocs_topic:display name=|inherit}}
+ * {{#zdocs_topic:display name=|toc name=|inherit}}
  *
  * This function defines a topic page.
  */
@@ -169,6 +169,7 @@ class ZDocsParserFunctions {
 		}
 
 		$displayTitle = null;
+		$tocDisplayTitle = null;
 		$inherits = false;
 
 		$params = func_get_args();
@@ -185,6 +186,8 @@ class ZDocsParserFunctions {
 			if ( $paramName == 'display name' ) {
 				$parserOutput->setProperty( 'ZDocsDisplayName', $value );
 				$displayTitle = $value;
+			} elseif ( $paramName == 'toc name' ) {
+				$tocDisplayTitle = $value;
 			} elseif ( $paramName == 'inherit' && $value == null ) {
 				$parserOutput->setProperty( 'ZDocsInherit', true );
 				$inherits = true;
@@ -201,8 +204,20 @@ class ZDocsParserFunctions {
 		if ( $displayTitle == null ) {
 			$displayTitle = $thisPageName;
 		}
-
 		$parserOutput->setDisplayTitle( $displayTitle );
+
+		if ( $tocDisplayTitle == null && $inherits ) {
+			$topic = new ZDocsTopic( $parser->getTitle() );
+			$inheritedTOCName = $topic->getInheritedParam( 'ZDocsTOCName' );
+			if ( $inheritedTOCName != null ) {
+				$tocDisplayTitle = $inheritedTOCName;
+			}
+		}
+
+		if ( $tocDisplayTitle == null ) {
+			$tocDisplayTitle = $displayTitle;
+		}
+		$parserOutput->setProperty( 'ZDocsTOCName', $tocDisplayTitle );
 	}
 
 	static function processParams( $parser, $params ) {

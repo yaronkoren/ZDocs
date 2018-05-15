@@ -38,6 +38,15 @@ class ZDocsTopic extends ZDocsPage {
 		return $text;
 	}
 
+	function getTOCLink() {
+		$displayName = $this->getPageProp( 'ZDocsTOCName' );
+		// Is this necessary?
+		if ( $displayName == null ) {
+			$displayName = $this->getDisplayName();
+		}
+		return Linker::link( $this->mTitle, $displayName );
+	}
+
 	function getFooter() {
 		$manual = $this->getManual();
 		$header = '<p>' . $manual->getDisplayName() . '</p>';
