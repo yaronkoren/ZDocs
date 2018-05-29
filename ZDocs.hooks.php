@@ -90,7 +90,7 @@ class ZDocsHooks {
 	 */
 	static public function setSearchText( $article, $user, $content,
 		$summary, $isMinor, $isWatch, $section, $flags, $revision,
-		$status, $baseRevId, $undidRevId ) {
+		$status, $baseRevId, $undidRevId = 0 ) {
 
 		if ( is_null( $revision ) ) {
 			return true;
