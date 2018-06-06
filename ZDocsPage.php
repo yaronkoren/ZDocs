@@ -3,6 +3,7 @@
 abstract class ZDocsPage {
 
 	protected $mTitle = null;
+	protected $mIsInvalid = false;
 
 	/**
 	 * See if the specified page can set to this type.
@@ -238,6 +239,10 @@ abstract class ZDocsPage {
 	}
 
 	public function userCanView( $user ) {
+		if ( $this->mIsInvalid ) {
+			return true;
+		}
+
 		list( $product, $version ) = $this->getProductAndVersion();
 		$versionStatus = $version->getStatus();
 
@@ -271,6 +276,10 @@ abstract class ZDocsPage {
 	}
 
 	public function userCanEdit( $user ) {
+		if ( $this->mIsInvalid ) {
+			return true;
+		}
+
 		list( $product, $version ) = $this->getProductAndVersion();
 		$versionStatus = $version->getStatus();
 

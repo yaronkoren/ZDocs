@@ -22,6 +22,11 @@
  * '#zdocs_manual' is called as:
  * {{#zdocs_manual:display name=|topics list=|pagination|inherit}}
  *
+ * "topics list=" holds a bulleted hierarchy of topic names. Names that
+ * begin with a "!" are considered "standalone topics" - these are topic
+ * pages that are not defined as being part of this manual, and their full
+ * page name must be specified.
+ *
  * This function defines a manual page.
  *
  * '#zdocs_topic' is called as:
@@ -165,7 +170,9 @@ class ZDocsParserFunctions {
 		list( $parentPageName, $thisPageName ) = ZDocsUtils::getPageParts( $parser->getTitle() );
 		$returnMsg = ZDocsTopic::checkPageEligibility( $parentPageName, $thisPageName );
 		if ( $returnMsg != null ) {
-			return $returnMsg;
+			// It's an "invalid" topic.
+			$parentPageName = null;
+			$thisPageName = $parser->getTitle()->getFullText();
 		}
 
 		$displayTitle = null;

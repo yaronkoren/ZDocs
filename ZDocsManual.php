@@ -64,6 +64,20 @@ class ZDocsManual extends ZDocsPage {
 			}
 		}
 
+		// Handle standalone topics - prepended with a "!".
+		$toc = preg_replace_callback(
+			"/(\*+)\s*!\s*(.*)\s*$/m",
+			function( $matches ) {
+				$standaloneTopicTitle = Title::newFromText( $matches[2] );
+				$standaloneTopic = ZDocsTopic::newStandalone( $standaloneTopicTitle, $this );
+				if ( $standaloneTopic == null ) {
+					return $matches[1] . $matches[2];
+				}
+				return $matches[1] . $standaloneTopic->getTocLink();
+			},
+			$toc
+		);
+
 		// doBlockLevels() takes care of just parsing '*' into
 		// bulleted lists, which is all we need.
 		$this->mTOC = $wgParser->doBlockLevels( $toc, true );
