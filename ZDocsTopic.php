@@ -155,4 +155,7 @@ class ZDocsTopic extends ZDocsPage {
 		return $versionPageName . '/' . $this->getManual()->getActualName() . '/' . $this->getActualName();
 	}
 
+	function isStandalone() {
+		return $this->mIsStandalone;
+	}
 }

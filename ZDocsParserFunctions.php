@@ -1,5 +1,7 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+
 /**
  * Parser functions for ZDocs.
  *
@@ -7,7 +9,7 @@
  * @ingroup ZDocs
  *
  * The following parser functions are defined: #zdocs_product,
- * #zdocs_version, #zdocs_manual and #zdocs_topic.
+ * #zdocs_version, #zdocs_manual, #zdocs_topic and #zdocs_link.
  *
  * '#zdocs_product' is called as:
  * {{#zdocs_product:display name=|admins=|editors=|previewers=}}
@@ -33,6 +35,11 @@
  * {{#zdocs_topic:display name=|toc name=|inherit}}
  *
  * This function defines a topic page.
+ *
+ * '#zdocs_link' is called as:
+ * {{#zdocs_link:product=|version=|manual=|topic=}}
+ *
+ * This function displays a link to another page in the ZDocs system.
  */
 
 class ZDocsParserFunctions {
@@ -225,6 +232,107 @@ class ZDocsParserFunctions {
 			$tocDisplayTitle = $displayTitle;
 		}
 		$parserOutput->setProperty( 'ZDocsTOCName', $tocDisplayTitle );
+	}
+
+	static function renderLink( &$parser ) {
+		$zdPage = ZDocsUtils::pageFactory( $parser->getTitle() );
+		if ( $zdPage == null ) {
+			return true;
+		}
+
+		$params = func_get_args();
+		array_shift( $params ); // We don't need the parser.
+		$processedParams = self::processParams( $parser, $params );
+
+		$product = $version = $manual = $topic = null;
+		foreach( $processedParams as $paramName => $value ) {
+			if ( $paramName == 'product' ) {
+				$product = $value;
+			} elseif ( $paramName == 'version' ) {
+				$version = $value;
+			} elseif ( $paramName == 'manual' ) {
+				$manual = $value;
+			} elseif ( $paramName == 'topic' ) {
+				$topic = $value;
+			}
+		}
+
+		if ( $topic != null ) {
+			$linkedPageType = 'topic';
+		} elseif ( $manual != null ) {
+			$linkedPageType = 'manual';
+		} elseif ( $version != null ) {
+			$linkedPageType = 'version';
+		} elseif ( $product != null ) {
+			$linkedPageType = 'product';
+		} else {
+			return "<div class=\"error\">At least one of product, version, manual and topic must be specified.</div>";
+		}
+
+		if ( $linkedPageType == 'product' || $linkedPageType == 'version' ) {
+			if ( $topic != null && $manual == null ) {
+				return "<div class=\"error\">A 'manual' value must be specified in this case.</div>";
+			}
+		}
+
+		if ( $linkedPageType == 'product' ) {
+			if ( $manual != null && $version == null ) {
+				return "<div class=\"error\">A 'version' value must be specified in this case.</div>";
+			}
+		}
+		// If it's a topic, there's a chance that it's "standalone",
+		// meaning that it gets its data from the query string.
+		// Unfortunately, we need to disable the cache in order to see
+		// the query string, so we have to do that regardless of
+		// whether it's standalone or not.
+		if ( get_class( $zdPage ) == 'ZDocsTopic' ) {
+			$parser->disableCache();
+			global $wgRequest;
+			$curProduct = $wgRequest->getVal( 'product' );
+			$curVersion = $wgRequest->getVal( 'version' );
+			$curManual = $wgRequest->getVal( 'manual' );
+		}
+
+		// Get this page's own product, and possibly version and manual.
+		if ( get_class( $zdPage ) == 'ZDocsProduct' ) {
+			$curProduct = $zdPage->getActualName();
+		} elseif ( $curProduct != null && $curVersion != null && $curManual != null ) {
+			// NO need to do anything; the values have laready been
+			// set.
+		} else {
+			list( $curProduct, $curVersion ) = $zdPage->getProductAndVersionStrings();
+			$curManual = $zdPage->getManual()->getActualName();
+		}
+
+		if ( $product != null ) {
+			$linkedPageName = $product;
+		} else {
+			$linkedPageName = $curProduct;
+		}
+		if ( $linkedPageType == 'version' || $linkedPageType == 'manual' || $linkedPageType == 'topic' ) {
+			if ( $version != null ) {
+				$linkedPageName .= '/' . $version;
+			} else {
+				$linkedPageName .= '/' . $curVersion;
+			}
+		}
+		if ( $linkedPageType == 'manual' || $linkedPageType == 'topic' ) {
+			if ( $manual != null ) {
+				$linkedPageName .= '/' . $manual;
+			} else {
+				$linkedPageName .= '/' . $curManual;
+			}
+		}
+		if ( $linkedPageType == 'topic' ) {
+			$linkedPageName .= '/' . $topic;
+		}
+
+		$linkedTitle = Title::newFromText( $linkedPageName );
+
+		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+		$linkStr = $linkRenderer->makeLink( $linkedTitle );
+
+		return array( $linkStr, 'noparse' => true, 'isHTML' => true );
 	}
 
 	static function processParams( $parser, $params ) {

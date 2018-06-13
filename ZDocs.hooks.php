@@ -7,6 +7,7 @@ class ZDocsHooks {
 		$parser->setFunctionHook( 'zdocs_version', array( 'ZDocsParserFunctions', 'renderVersion' ) );
 		$parser->setFunctionHook( 'zdocs_manual', array( 'ZDocsParserFunctions', 'renderManual' ) );
 		$parser->setFunctionHook( 'zdocs_topic', array( 'ZDocsParserFunctions', 'renderTopic' ) );
+		$parser->setFunctionHook( 'zdocs_link', array( 'ZDocsParserFunctions', 'renderLink' ) );
 		return true;
 	}
 
