@@ -49,7 +49,22 @@ class ZDocsManual extends ZDocsPage {
 	private function generateTableOfContents( $showErrors ) {
 		global $wgParser;
 
-		$toc = $this->getPossiblyInheritedParam( 'ZDocsTopicsList' );
+		$tocOrPageName = $this->getPossiblyInheritedParam( 'ZDocsTopicsList' );
+		// Decide whether this is a table of contents or a page name
+		// based on whether or not the string starts with a '*' -
+		// hopefully that's a good enough check.
+		if ( substr( $tocOrPageName, 0, 1 ) == '*' ) {
+			$toc = $tocOrPageName;
+		} else {
+			$title = Title::newFromText( $tocOrPageName );
+			$wikiPage = new WikiPage( $title );
+			$content = $wikiPage->getContent();
+			if ( $content !== null ) {
+				$toc = $content->getNativeData();
+			} else {
+				$toc = null;
+			}
+		}
 		$topics = $this->getAllTopics();
 		$this->mOrderedTopics = array();
 		foreach ( $topics as $i => $topic ) {

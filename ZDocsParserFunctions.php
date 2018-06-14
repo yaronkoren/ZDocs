@@ -22,12 +22,17 @@ use MediaWiki\MediaWikiServices;
  * This function defines a version page.
  *
  * '#zdocs_manual' is called as:
- * {{#zdocs_manual:display name=|topics list=|pagination|inherit}}
+ * {{#zdocs_manual:display name=|topics list=|topics list page=|
+ * pagination|inherit}}
  *
  * "topics list=" holds a bulleted hierarchy of topic names. Names that
  * begin with a "!" are considered "standalone topics" - these are topic
  * pages that are not defined as being part of this manual, and their full
  * page name must be specified.
+ *
+ * "topics list page=" holds the name of a page that in turns holds a
+ * bulleted hierarchy. Only one of this parameter and "topics list=" should
+ * be specified.
  *
  * This function defines a manual page.
  *
@@ -152,6 +157,16 @@ class ZDocsParserFunctions {
 				$parserOutput->setProperty( 'ZDocsInherit', true );
 				$inherits = true;
 			} elseif ( $paramName == 'topics list' ) {
+				$parserOutput->setProperty( 'ZDocsTopicsList', $value );
+			} elseif ( $paramName == 'topics list page' ) {
+				// We use the same property name as 'topics list',
+				// 'ZDocsTopicsList', instead of something like
+				// 'ZDocsTopicsListPage', so that there won't
+				// be any ambiguity about which one to use if
+				// it's an inherited property.
+				// We differentiate between the two based on
+				// whether the value starts with a '*' or not.
+				// @TODO - add validation before storage.
 				$parserOutput->setProperty( 'ZDocsTopicsList', $value );
 			} elseif ( $paramName == 'pagination' && $value == null ) {
 				$parserOutput->setProperty( 'ZDocsPagination', true );
