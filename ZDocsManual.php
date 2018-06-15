@@ -60,7 +60,8 @@ class ZDocsManual extends ZDocsPage {
 			$wikiPage = new WikiPage( $title );
 			$content = $wikiPage->getContent();
 			if ( $content !== null ) {
-				$toc = $content->getNativeData();
+				$pageText = $content->getNativeData();
+				$toc = $wgParser->recursiveTagParse( $pageText );
 			} else {
 				$toc = null;
 			}
