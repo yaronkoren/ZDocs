@@ -53,7 +53,10 @@ class ZDocsManual extends ZDocsPage {
 		// Decide whether this is a table of contents or a page name
 		// based on whether or not the string starts with a '*' -
 		// hopefully that's a good enough check.
-		if ( substr( $tocOrPageName, 0, 1 ) == '*' ) {
+		if ( $tocOrPageName == null ) {
+			$this->mTOC = null;
+			return;
+		} elseif ( substr( $tocOrPageName, 0, 1 ) == '*' ) {
 			$toc = $tocOrPageName;
 		} else {
 			$title = Title::newFromText( $tocOrPageName );
@@ -63,7 +66,8 @@ class ZDocsManual extends ZDocsPage {
 				$pageText = $content->getNativeData();
 				$toc = $wgParser->recursiveTagParse( $pageText );
 			} else {
-				$toc = null;
+				$this->mTOC = null;
+				return;
 			}
 		}
 		$topics = $this->getAllTopics();
