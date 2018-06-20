@@ -60,15 +60,18 @@ class ZDocsManual extends ZDocsPage {
 			$toc = $tocOrPageName;
 		} else {
 			$title = Title::newFromText( $tocOrPageName );
-			$wikiPage = new WikiPage( $title );
-			$content = $wikiPage->getContent();
-			if ( $content !== null ) {
-				$pageText = $content->getNativeData();
-				$toc = $wgParser->recursiveTagParse( $pageText );
-			} else {
+			if ( $title == null ) {
 				$this->mTOC = null;
 				return;
 			}
+			$wikiPage = new WikiPage( $title );
+			$content = $wikiPage->getContent();
+			if ( $content == null ) {
+				$this->mTOC = null;
+				return;
+			}
+			$pageText = $content->getNativeData();
+			$toc = $wgParser->recursiveTagParse( $pageText );
 		}
 		$topics = $this->getAllTopics();
 		$this->mOrderedTopics = array();
